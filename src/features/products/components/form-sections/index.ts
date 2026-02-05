@@ -1,0 +1,11 @@
+export { BasicDetailsSection } from './BasicDetailsSection';
+export { MediaSection } from './MediaSection';
+export { DeferredMediaSection } from './DeferredMediaSection';
+export { PricingInventorySection } from './PricingInventorySection';
+export { CategorizationSection } from './CategorizationSection';
+export { SeoSection } from './SeoSection';
+export { FaqSection } from './FaqSection';
+export { AvailabilitySection } from './AvailabilitySection';
+export { AssociationsSection } from './AssociationsSection';
+export { SalesChannelsSection } from './SalesChannelsSection';
+export { ProductVariantsSection } from './ProductVariantsSection';

@@ -1,0 +1,10 @@
+export { default as CollectionListPage } from './pages/CollectionListPage';
+export { CreateCollectionPage } from './pages/CreateCollectionPage';
+export { default as CollectionDetailPage } from './pages/CollectionDetailPage';
+export { ProductSelector } from './components/ProductSelector';
+export { CollectionMediaUpload } from './components/CollectionMediaUpload';
+export * from './components/formSections';
+export * from './types/collection.types';
+export * from './hooks/useCollections';
+export * from './services/collectionService';
+export * from './data/mockCollections';

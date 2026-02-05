@@ -1,0 +1,150 @@
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { supabase } from "@/lib/supabase";
+import { notifySuccess, notifyError } from "@/utils";
+import { signupSchema, type SignupFormData } from '@/lib/validation/schemas';
+import { FormButton } from "@/components/forms/FormButton";
+import logo from "@/assets/logos/ANANT ENTERPRISES 1-04.png";
+
+import {
+    EmailVerificationSuccess,
+    NameFields,
+    EmailField,
+    PhoneField,
+    PasswordFields,
+    SocialSignupOptions,
+    SignupFooter
+} from '@/components/features/auth';
+
+const SignupPage = () => {
+    const navigate = useNavigate();
+    const [signupSuccess, setSignupSuccess] = useState(false);
+    const [registeredEmail, setRegisteredEmail] = useState('');
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<SignupFormData>({
+        resolver: zodResolver(signupSchema),
+        defaultValues: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phoneNumber: '',
+            password: '',
+            confirmPassword: '',
+        },
+    });
+
+
+
+
+
+
+
+    // -------------------------
+    // Submit Handler
+    // -------------------------
+    const handleSubmitForm = async (values: SignupFormData) => {
+        try {
+            // Ensure phone is verified
+            // if (!phoneVerified) {
+            //     notifyError("Please verify your phone number first");
+            //     return;
+            // }
+
+            // Remove confirmPassword before sending to Supabase
+            const { confirmPassword: _confirmPassword, ...signupData } = values;
+
+            const { error } = await supabase.auth.signUp({
+                email: signupData.email,
+                password: signupData.password,
+                options: {
+                    data: {
+                        firstName: signupData.firstName,
+                        lastName: signupData.lastName,
+                        phoneNumber: signupData.phoneNumber,
+                        phone: `+91${signupData.phoneNumber}`,
+                        phone_verified: true, // Always set to true since verification is commented out
+                    },
+                },
+            });
+
+            if (error) throw error;
+
+            // Show success screen with email verification message
+            setRegisteredEmail(signupData.email);
+            setSignupSuccess(true);
+            notifySuccess("Account created successfully!");
+        } catch (error) {
+            let message = "Failed to create account. Please try again.";
+
+            if (error instanceof Error) {
+                message = error.message;
+            }
+
+            notifyError(message);
+        }
+    };
+
+    // Email Verification Success Screen
+    if (signupSuccess) {
+        return <EmailVerificationSuccess registeredEmail={registeredEmail} onNavigateToLogin={() => navigate('/auth/login')} />;
+    }
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0E042F] via-[#1a0f3e] to-[#0E042F] p-4">
+            <div className="w-full max-w-2xl">
+                {/* Logo/Header */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center mb-4">
+                        <img
+                            src={logo}
+                            alt="Anant Enterprises Logo"
+                            className="w-36 h-36 object-contain"
+                        />
+                    </div>
+                    <h1 className="text-white text-3xl mb-2">Create Account</h1>
+                    <p className="text-white/60">Sign up to get started with your account</p>
+                </div>
+
+                {/* Signup Card */}
+                <div className="bg-white rounded-2xl shadow-xl p-8">
+
+                    <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-5">
+
+                        <NameFields register={register} errors={errors} />
+
+                        <EmailField register={register} errors={errors} />
+
+                        <PhoneField register={register} errors={errors} />
+
+                        <PasswordFields register={register} errors={errors} />
+
+                        {/* Submit Button */}
+                        <FormButton isLoading={isSubmitting}>
+                            Create Account
+                        </FormButton>
+
+                        {/* {!phoneVerified && (
+                            <p className="text-sm text-amber-600 text-center -mt-3">
+                                Please verify your phone number to continue
+                            </p>
+                        )} */}
+
+                    </form>
+
+                    <SocialSignupOptions isSubmitting={isSubmitting} />
+
+                    <SignupFooter onNavigateToLogin={() => navigate('/auth/login')} />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default SignupPage;
