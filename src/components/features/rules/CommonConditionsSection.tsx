@@ -107,7 +107,6 @@ export const CommonConditionsSection = ({
   };
 
   const handleAdvancedRulesChange = (rules: AdvancedConditionItem[]) => {
-    console.log('handleAdvancedRulesChange called with:', rules);
     if (!onConditionsChange) return;
 
     // Recursive function to convert advanced items back to simple format
@@ -135,7 +134,6 @@ export const CommonConditionsSection = ({
 
     // Map all items (conditions and groups)
     const mapped = rules.map(convertItem).filter(Boolean);
-    console.log('Calling onConditionsChange with:', mapped);
     onConditionsChange(mapped as any[]);
   };
 

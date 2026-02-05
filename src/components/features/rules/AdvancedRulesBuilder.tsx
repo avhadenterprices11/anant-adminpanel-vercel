@@ -140,17 +140,11 @@ export function AdvancedRulesBuilder({
   };
   // Toggle condition logic operator
   const toggleConditionLogic = (path: number[]) => {
-    console.log('toggleConditionLogic called with path:', path);
     const updatedItems = JSON.parse(JSON.stringify(items));
     const item = getItemByPath(updatedItems, path);
-    console.log('Found item:', item);
     if (item && item.type === 'condition') {
-      const oldValue = item.logicOperator;
       item.logicOperator = item.logicOperator === 'and' ? 'or' : 'and';
-      console.log(`Toggled from ${oldValue} to ${item.logicOperator}`);
       onChange(updatedItems);
-    } else {
-      console.log('Item not found or not a condition');
     }
   };
   // Render single condition row

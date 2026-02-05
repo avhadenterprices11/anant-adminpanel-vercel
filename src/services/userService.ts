@@ -4,6 +4,7 @@
  */
 
 import { makeGetRequest, makePutRequest } from '@/lib/api/baseApi';
+import { logger } from '@/utils/logger';
 
 export interface User {
   id: string;
@@ -31,7 +32,7 @@ export const getCurrentUser = async (): Promise<User> => {
   const apiResponse = response.data as any;
   const user = apiResponse.data; // The actual user is inside the 'data' property
 
-  console.log('User data from API:', user);
+  logger.debug('User data from API:', user);
 
   // Correctly map first and last name from backend fields if available
   const firstName = user.first_name || '';
@@ -65,7 +66,7 @@ export const getCurrentUser = async (): Promise<User> => {
     profileImageUrl: user.profile_image_url || null,
   };
 
-  console.log('Mapped user:', mappedUser);
+  logger.debug('Mapped user:', mappedUser);
   return mappedUser;
 };
 
@@ -120,7 +121,7 @@ export const updateUser = async (
     payload.profile_image_url = (updates as any).profile_image_url;
   }
 
-  console.log('Updating user with payload:', payload);
+  logger.debug('Updating user with payload:', payload);
 
   const response = await makePutRequest(`/users/${userId}`, payload);
 
@@ -128,7 +129,7 @@ export const updateUser = async (
   const apiResponse = response.data as any;
   const user = apiResponse.data;
 
-  console.log('Update response:', user);
+  logger.debug('Update response:', user);
 
   // Re-map response
   const firstName = user.first_name || '';
